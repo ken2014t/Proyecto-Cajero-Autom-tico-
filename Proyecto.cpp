@@ -368,22 +368,17 @@ void Depositar(int indiceUsuario){
 }
 
 //Función cambiar PIN
-void CambiarPIN(int indiceUsuario)
-{
+void CambiarPIN(int indiceUsuario){
     string pinActual;
     string nuevoPIN;
     string confirmarPIN;
-
     system("cls");
     Pantalla_Inicio();
-
     cout << "========== CAMBIAR PIN ==========\n\n";
-
     cout << "Ingrese su PIN actual: ";
     cin >> pinActual;
 
-    if(pinActual != cuentas[indiceUsuario].pin)
-    {
+    if(pinActual != cuentas[indiceUsuario].pin){
         cout << "\nPIN incorrecto." << endl;
         getch();
         return;
@@ -395,15 +390,13 @@ void CambiarPIN(int indiceUsuario)
     cout << "Confirme el nuevo PIN: ";
     cin >> confirmarPIN;
 
-    if(nuevoPIN != confirmarPIN)
-    {
+    if(nuevoPIN != confirmarPIN){
         cout << "\nLos PIN no coinciden." << endl;
         getch();
         return;
     }
 
-    if(nuevoPIN.length() != 4)
-    {
+    if(nuevoPIN.length() != 4){
         cout << "\nEl PIN debe tener 4 digitos." << endl;
         getch();
         return;
@@ -411,8 +404,7 @@ void CambiarPIN(int indiceUsuario)
 
     bool soloNumeros = true;
 
-    for(int i = 0; i < nuevoPIN.length(); i++)
-    {
+    for(int i = 0; i < nuevoPIN.length(); i++){
         if(!isdigit(nuevoPIN[i]))
         {
             soloNumeros = false;
@@ -420,18 +412,71 @@ void CambiarPIN(int indiceUsuario)
         }
     }
 
-    if(!soloNumeros)
-    {
+    if(!soloNumeros){
         cout << "\nEl PIN solo puede contener numeros." << endl;
         getch();
         return;
     }
 
     cuentas[indiceUsuario].pin = nuevoPIN;
-
     GuardarCambios();
-
     cout << "\nPIN cambiado correctamente." << endl;
+    getch();
+}
+
+//Función recursiva
+void CuentaRegresiva(int segundos)
+{
+    if(segundos == 0)
+    {
+        cout << "\nSesion cerrada." << endl;
+        return;
+    }
+
+    cout << "Cerrando sesion en " << segundos << "..." << endl;
+
+    Sleep(1000);
+
+    CuentaRegresiva(segundos - 1);
+}
+
+//vector
+void MostrarVector()
+{
+    system("cls");
+
+    cout << "====== OPERACIONES DE LA SESION ======\n\n";
+
+    if(operaciones.empty())
+    {
+        cout << "No hay operaciones registradas." << endl;
+    }
+    else
+    {
+        for(int i = 0; i < operaciones.size(); i++)
+        {
+            cout << i + 1 << ". " << operaciones[i] << endl;
+        }
+    }
+
+    getch();
+}
+
+//Matriz
+void MostrarMatriz()
+{
+    system("cls");
+
+    cout << "========== MATRIZ DE OPERACIONES ==========\n\n";
+
+    cout << "TIPO\tMONTO\tSALDO\n";
+
+    for(int i = 0; i < totalOperaciones; i++)
+    {
+        cout << matrizOperaciones[i][0] << "\t";
+        cout << matrizOperaciones[i][1] << "\t";
+        cout << matrizOperaciones[i][2] << endl;
+    }
 
     getch();
 }
