@@ -1,0 +1,12 @@
+Grupo 6
+
+Nombre del Proyecto: Cajero Automático 
+
+Integrantes.
+- Neo Andres Pinto Sanchez         - npintos@unal.edu.co
+- Lusi Miguel Monterrosa Guardia   - lmonterrosa@unal.edu.co
+- Dilan Joel Amia Rodriguez        - damia@unal.edu.co
+
+Descripción del proyecto.
+
+El proyecto consiste en el desarrollo de un sistema de cajero automático en C++ que permitirá a los usuarios gestionar sus cuentas bancarias mediante una interfaz por consola. El sistema ofrecerá funcionalidades como registro de usuarios, inicio de sesión, consulta de saldo, depósitos, retiros, transferencias y visualización del historial de movimientos. Además, la información de las cuentas y transacciones se almacenará en archivos para garantizar la persistencia de los datos, manejo de archivos, condicionales, ciclos y modularidad del código, con el fin de simular el funcionamiento básico de un cajero automático real.
