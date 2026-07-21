@@ -30,7 +30,7 @@ vector<string> operaciones;
 double matrizOperaciones[100][3];
 int totalOperaciones = 0;
 
-//Declaración de las funciones del programa
+//Declaración de las funciones para programa
 void Pantalla_Inicio(); 
 void CrearCuenta(); 
 void IniciarSesion(); 
@@ -48,12 +48,12 @@ void CuentaRegresiva(int segundos); //Función Recursiva declarada
 void MostrarVector(); //Vector declarada
 void MostrarMatriz(); //Matriz declarada
 
-//Menú principal
+//Menu principal
 int main() {
 	CargarCuentas(); 
     do
     {
-        system("cls"); // Limpia la pantalla
+        system("cls");
 
         Pantalla_Inicio();
 
@@ -115,7 +115,7 @@ void Pantalla_Inicio() {
 
 }
 
-//El usuario crea su cuenta
+
 
 void CrearCuenta() {
     system("cls");
@@ -137,7 +137,7 @@ void CrearCuenta() {
     cuentas[totalCuentas].bloqueada = false;
     cuentas[totalCuentas].intentos = 0;
     
-    // Guardar en cuentas.txt
+    // las opereciones que hace el ususario se guardan en cuentas.txt 
     
     ofstream archivo("cuentas.txt", ios::app);
     
@@ -334,7 +334,7 @@ void MenuUsuario(int indiceUsuario){
 	} while(opcionUsuario !=7); 
 }
 
-//Función depositar (case 2)
+//Función depositar (caso 2)
 void Depositar(int indiceUsuario){
     double monto;
 
@@ -367,7 +367,7 @@ void Depositar(int indiceUsuario){
     getch();
 }
 
-//Función retirar (case 3)
+//Función retirar (caso 3)
 void Retirar(int indiceUsuario){
     double monto;
 
@@ -404,7 +404,7 @@ void Retirar(int indiceUsuario){
     }
     getch();
 }
-//Generar el recibo de retiro (case 3)
+//esto generar el recibo de retiro (cas0 3)
 void GenerarRecibo(string operacion, int indiceUsuario, double monto)
 {
     time_t ahora = time(0);
@@ -443,7 +443,7 @@ void GenerarRecibo(string operacion, int indiceUsuario, double monto)
         system("notepad Recibo.txt");
     }
 }
-// Actualizar el saldo segun lo guardado en cuenta (saldo) (case 3)
+// Actualizar el saldo segun lo guardado en la cuenta (saldo) (caso 3)
 void GuardarCambios(){
     ofstream archivo("cuentas.txt");
 
@@ -458,7 +458,7 @@ void GuardarCambios(){
     archivo.close();
 }
 
-// Funci�n Transferir (case 4)
+// Función Transferir (caso 4)
 void Transferir(int indiceUsuario)
 {
     string cedulaDestino;
@@ -543,7 +543,7 @@ void Transferir(int indiceUsuario)
     getch();
 }
 
-//Funcion guardar historial 
+//Funcion para guardar historial 
 void GuardarHistorial(string operacion, int indiceUsuario, double monto){
     time_t ahora = time(0);
     tm *t = localtime(&ahora);
@@ -609,7 +609,7 @@ void VerHistorial(int indiceUsuario){
     getch();
 }
 
-//Funci�n cambiar PIN
+//Función para cambiar el PIN del cliente
 void CambiarPIN(int indiceUsuario)
 {
     string pinActual;
@@ -678,7 +678,7 @@ void CambiarPIN(int indiceUsuario)
     getch();
 }
 
-//Funci�n recursiva
+
 void CuentaRegresiva(int segundos)
 {
     if(segundos == 0)
@@ -715,7 +715,7 @@ void MostrarVector()
     getch();
 }
 
-//Matriz
+
 void MostrarMatriz()
 {
     system("cls");
