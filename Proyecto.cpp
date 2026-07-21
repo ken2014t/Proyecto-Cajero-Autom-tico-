@@ -30,7 +30,7 @@ vector<string> operaciones;
 double matrizOperaciones[100][3];
 int totalOperaciones = 0;
 
-//Declaración de las funciones del programa
+//DeclaraciÃ³n de las funciones del programa
 void Pantalla_Inicio(); 
 void CrearCuenta(); 
 void IniciarSesion(); 
@@ -44,11 +44,11 @@ void Transferir(int indiceUsuario);
 void GuardarHistorial(string operacion, int indiceUsuario, double monto);
 void VerHistorial(int indiceUsuario);  
 void CambiarPIN(int indiceUsuario);
-void CuentaRegresiva(int segundos); //Función Recursiva declarada
+void CuentaRegresiva(int segundos); //FunciÃ³n Recursiva declarada
 void MostrarVector(); //Vector declarada
 void MostrarMatriz(); //Matriz declarada
 
-//Menú principal
+//MenÃº principal
 int main() {
 	CargarCuentas(); 
     do
@@ -256,7 +256,7 @@ void IniciarSesion(){
     }
 }
 
-//Menú usuario al ingresar con su cedula y contraseña
+//MenÃº usuario al ingresar con su cedula y contraseÃ±a
 void MenuUsuario(int indiceUsuario){
 	
 	int opcionUsuario; 
@@ -334,7 +334,7 @@ void MenuUsuario(int indiceUsuario){
 	} while(opcionUsuario !=7); 
 }
 
-//Función depositar (case 2)
+//FunciÃ³n depositar (case 2)
 void Depositar(int indiceUsuario){
     double monto;
 
@@ -367,18 +367,265 @@ void Depositar(int indiceUsuario){
     getch();
 }
 
-//Función cambiar PIN
-void CambiarPIN(int indiceUsuario){
+//FunciÃ³n retirar (case 3)
+void Retirar(int indiceUsuario){
+    double monto;
+
+    system("cls");
+    Pantalla_Inicio();
+
+    cout << "========== RETIRAR DINERO ==========\n\n";
+
+    cout << "Saldo actual: $" << cuentas[indiceUsuario].saldo << endl;
+
+    cout << "\nIngrese el monto a retirar: $";
+    cin >> monto;
+
+    if(monto <= 0){
+        cout << "\nEl monto debe ser mayor que cero." << endl;
+    }
+    else if(monto > cuentas[indiceUsuario].saldo){
+        cout << "\nSaldo insuficiente." << endl;
+    }
+    else{
+        cuentas[indiceUsuario].saldo -= monto;
+
+        cout << "\nRetiro realizado correctamente." << endl;
+        cout << "Nuevo saldo: $" << cuentas[indiceUsuario].saldo << endl;
+        
+        GuardarCambios(); 
+        GuardarHistorial("RETIRO", indiceUsuario, monto);
+        matrizOperaciones[totalOperaciones][0] = 2; 
+        matrizOperaciones[totalOperaciones][1] = monto; 
+        matrizOperaciones[totalOperaciones][2] = cuentas[indiceUsuario].saldo; 
+        totalOperaciones++; 
+		operaciones.push_back("Retiro: $" + to_string((int)monto)); 
+        GenerarRecibo("RETIRO", indiceUsuario, monto); 
+    }
+    getch();
+}
+//Generar el recibo de retiro (case 3)
+void GenerarRecibo(string operacion, int indiceUsuario, double monto)
+{
+    time_t ahora = time(0);
+    tm *t = localtime(&ahora);
+
+    ofstream recibo("Recibo.txt");
+
+    if(recibo.is_open())
+    {
+        recibo << "======================================" << endl;
+        recibo << "        CAJERO AUTOMATICO" << endl;
+        recibo << "======================================" << endl;
+
+        recibo << "Operacion : " << operacion << endl;
+        recibo << "Nombre    : " << cuentas[indiceUsuario].nombre << endl;
+        recibo << "Cedula    : " << cuentas[indiceUsuario].cedula << endl;
+        recibo << "Monto     : $" << monto << endl;
+        recibo << "Saldo     : $" << cuentas[indiceUsuario].saldo << endl;
+
+        recibo << endl;
+
+        recibo << "Fecha: "
+                << t->tm_mday << "/"
+                << t->tm_mon + 1 << "/"
+                << t->tm_year + 1900 << endl;
+
+        recibo << "Hora : "
+                << t->tm_hour << ":"
+                << t->tm_min << ":"
+                << t->tm_sec << endl;
+
+        recibo << "======================================" << endl;
+
+        recibo.close();
+        cout << "\nGenerando recibo..." << endl; 
+        system("notepad Recibo.txt");
+    }
+}
+// Actualizar el saldo segun lo guardado en cuenta (saldo) (case 3)
+void GuardarCambios(){
+    ofstream archivo("cuentas.txt");
+
+    for(int i = 0; i < totalCuentas; i++){
+        archivo << cuentas[i].nombre << ";";
+        archivo << cuentas[i].cedula << ";";
+        archivo << cuentas[i].pin << ";";
+        archivo << cuentas[i].saldo << ";";
+        archivo << cuentas[i].bloqueada << ";";
+        archivo << cuentas[i].intentos << endl;
+    }
+    archivo.close();
+}
+
+// Funciï¿½n Transferir (case 4)
+void Transferir(int indiceUsuario)
+{
+    string cedulaDestino;
+    double monto;
+    int indiceDestino = -1;
+
+    system("cls");
+    Pantalla_Inicio();
+
+    cout << "========== TRANSFERIR DINERO ==========\n\n";
+
+    cout << "Saldo disponible: $" << cuentas[indiceUsuario].saldo << endl;
+
+    cout << "\nIngrese la cedula de la cuenta destino: ";
+    cin >> cedulaDestino;
+
+    // Buscar la cuenta destino
+    for(int i = 0; i < totalCuentas; i++)
+    {
+        if(cuentas[i].cedula == cedulaDestino)
+        {
+            indiceDestino = i;
+            break;
+        }
+    }
+
+    // Verificar que exista
+    if(indiceDestino == -1)
+    {
+        cout << "\nLa cuenta destino no existe." << endl;
+        getch();
+        return;
+    }
+
+    // Verificar que no sea la misma cuenta
+    if(indiceDestino == indiceUsuario)
+    {
+        cout << "\nNo puede transferirse dinero a la misma cuenta." << endl;
+        getch();
+        return;
+    }
+
+    cout << "Cuenta destino: " << cuentas[indiceDestino].nombre << endl;
+
+    cout << "\nIngrese el monto a transferir: $";
+    cin >> monto;
+
+    // Validar monto
+    if(monto <= 0)
+    {
+        cout << "\nEl monto debe ser mayor que cero." << endl;
+        getch();
+        return;
+    }
+
+    // Validar saldo
+    if(monto > cuentas[indiceUsuario].saldo)
+    {
+        cout << "\nSaldo insuficiente." << endl;
+        getch();
+        return;
+    }
+
+    // Realizar transferencia
+    cuentas[indiceUsuario].saldo -= monto;
+    cuentas[indiceDestino].saldo += monto;
+
+    GuardarCambios();
+    GuardarHistorial("TRANSFERENCIA", indiceUsuario, monto);
+    matrizOperaciones[totalOperaciones][0] = 3;
+    matrizOperaciones[totalOperaciones][1] = monto;
+    matrizOperaciones[totalOperaciones][2] = cuentas[indiceUsuario].saldo;
+    totalOperaciones++; 
+    operaciones.push_back("Transferencia: $" + to_string((int)monto)); 
+    GenerarRecibo("TRANSFERENCIA", indiceUsuario, monto);
+
+    cout << "\nTransferencia realizada correctamente." << endl;
+    cout << "Destino: " << cuentas[indiceDestino].nombre << endl;
+    cout << "Monto transferido: $" << monto << endl;
+    cout << "Nuevo saldo: $" << cuentas[indiceUsuario].saldo << endl;
+
+    getch();
+}
+
+//Funcion guardar historial 
+void GuardarHistorial(string operacion, int indiceUsuario, double monto){
+    time_t ahora = time(0);
+    tm *t = localtime(&ahora);
+
+    ofstream historial("historial.txt", ios::app);
+
+    if(historial.is_open()){
+        historial << cuentas[indiceUsuario].nombre << ";";
+        historial << cuentas[indiceUsuario].cedula << ";";
+        historial << operacion << ";";
+        historial << monto << ";";
+        historial << cuentas[indiceUsuario].saldo << ";";
+
+        historial
+            << t->tm_mday << "/"
+            << t->tm_mon + 1 << "/"
+            << t->tm_year + 1900 << ";";
+
+        historial
+            << t->tm_hour << ":"
+            << t->tm_min << ":"
+            << t->tm_sec;
+
+        historial << endl;
+
+        historial.close();
+    }
+}
+
+void VerHistorial(int indiceUsuario){
+    system("cls");
+
+    ifstream historial("historial.txt");
+
+    string nombre;
+    string cedula;
+    string operacion;
+    string monto;
+    string saldo;
+    string fecha;
+    string hora;
+
+    cout << "========== HISTORIAL ==========\n\n";
+
+    while(getline(historial, nombre, ';')){
+        getline(historial, cedula, ';');
+        getline(historial, operacion, ';');
+        getline(historial, monto, ';');
+        getline(historial, saldo, ';');
+        getline(historial, fecha, ';');
+        getline(historial, hora);
+
+        if(cedula == cuentas[indiceUsuario].cedula){
+            cout << "Operacion : " << operacion << endl;
+            cout << "Monto     : $" << monto << endl;
+            cout << "Saldo     : $" << saldo << endl;
+            cout << "Fecha     : " << fecha << endl;
+            cout << "Hora      : " << hora << endl;
+            cout << "-----------------------------------" << endl;
+        }
+    }
+    historial.close();
+    getch();
+}
+
+//Funciï¿½n cambiar PIN
+void CambiarPIN(int indiceUsuario)
+{
     string pinActual;
     string nuevoPIN;
     string confirmarPIN;
+
     system("cls");
     Pantalla_Inicio();
+
     cout << "========== CAMBIAR PIN ==========\n\n";
+
     cout << "Ingrese su PIN actual: ";
     cin >> pinActual;
 
-    if(pinActual != cuentas[indiceUsuario].pin){
+    if(pinActual != cuentas[indiceUsuario].pin)
+    {
         cout << "\nPIN incorrecto." << endl;
         getch();
         return;
@@ -390,13 +637,15 @@ void CambiarPIN(int indiceUsuario){
     cout << "Confirme el nuevo PIN: ";
     cin >> confirmarPIN;
 
-    if(nuevoPIN != confirmarPIN){
+    if(nuevoPIN != confirmarPIN)
+    {
         cout << "\nLos PIN no coinciden." << endl;
         getch();
         return;
     }
 
-    if(nuevoPIN.length() != 4){
+    if(nuevoPIN.length() != 4)
+    {
         cout << "\nEl PIN debe tener 4 digitos." << endl;
         getch();
         return;
@@ -404,7 +653,8 @@ void CambiarPIN(int indiceUsuario){
 
     bool soloNumeros = true;
 
-    for(int i = 0; i < nuevoPIN.length(); i++){
+    for(int i = 0; i < nuevoPIN.length(); i++)
+    {
         if(!isdigit(nuevoPIN[i]))
         {
             soloNumeros = false;
@@ -412,72 +662,18 @@ void CambiarPIN(int indiceUsuario){
         }
     }
 
-    if(!soloNumeros){
+    if(!soloNumeros)
+    {
         cout << "\nEl PIN solo puede contener numeros." << endl;
         getch();
         return;
     }
 
     cuentas[indiceUsuario].pin = nuevoPIN;
+
     GuardarCambios();
+
     cout << "\nPIN cambiado correctamente." << endl;
-    getch();
-}
-
-//Función recursiva
-void CuentaRegresiva(int segundos)
-{
-    if(segundos == 0)
-    {
-        cout << "\nSesion cerrada." << endl;
-        return;
-    }
-
-    cout << "Cerrando sesion en " << segundos << "..." << endl;
-
-    Sleep(1000);
-
-    CuentaRegresiva(segundos - 1);
-}
-
-//vector
-void MostrarVector()
-{
-    system("cls");
-
-    cout << "====== OPERACIONES DE LA SESION ======\n\n";
-
-    if(operaciones.empty())
-    {
-        cout << "No hay operaciones registradas." << endl;
-    }
-    else
-    {
-        for(int i = 0; i < operaciones.size(); i++)
-        {
-            cout << i + 1 << ". " << operaciones[i] << endl;
-        }
-    }
 
     getch();
 }
-
-//Matriz
-void MostrarMatriz()
-{
-    system("cls");
-
-    cout << "========== MATRIZ DE OPERACIONES ==========\n\n";
-
-    cout << "TIPO\tMONTO\tSALDO\n";
-
-    for(int i = 0; i < totalOperaciones; i++)
-    {
-        cout << matrizOperaciones[i][0] << "\t";
-        cout << matrizOperaciones[i][1] << "\t";
-        cout << matrizOperaciones[i][2] << endl;
-    }
-
-    getch();
-}
-
