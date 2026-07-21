@@ -677,3 +677,59 @@ void CambiarPIN(int indiceUsuario)
 
     getch();
 }
+
+//Funci�n recursiva
+void CuentaRegresiva(int segundos)
+{
+    if(segundos == 0)
+    {
+        cout << "\nSesion cerrada." << endl;
+        return;
+    }
+
+    cout << "Cerrando sesion en " << segundos << "..." << endl;
+
+    Sleep(1000);
+
+    CuentaRegresiva(segundos - 1);
+}
+
+void MostrarVector()
+{
+    system("cls");
+
+    cout << "====== OPERACIONES DE LA SESION ======\n\n";
+
+    if(operaciones.empty())
+    {
+        cout << "No hay operaciones registradas." << endl;
+    }
+    else
+    {
+        for(int i = 0; i < operaciones.size(); i++)
+        {
+            cout << i + 1 << ". " << operaciones[i] << endl;
+        }
+    }
+
+    getch();
+}
+
+//Matriz
+void MostrarMatriz()
+{
+    system("cls");
+
+    cout << "========== MATRIZ DE OPERACIONES ==========\n\n";
+
+    cout << "TIPO\tMONTO\tSALDO\n";
+
+    for(int i = 0; i < totalOperaciones; i++)
+    {
+        cout << matrizOperaciones[i][0] << "\t";
+        cout << matrizOperaciones[i][1] << "\t";
+        cout << matrizOperaciones[i][2] << endl;
+    }
+
+    getch();
+}
