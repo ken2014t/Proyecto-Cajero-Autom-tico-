@@ -47,6 +47,7 @@ void CambiarPIN(int indiceUsuario);
 void CuentaRegresiva(int segundos); //Función Recursiva declarada
 void MostrarVector(); //Vector declarada
 void MostrarMatriz(); //Matriz declarada
+void LeerPIN(string &pin); 
 
 //Menu principal
 int main() {
@@ -129,8 +130,9 @@ void CrearCuenta() {
     getline(cin, cuentas[totalCuentas].cedula);
 
     cout << "PIN (4 digitos): ";
-    getline(cin, cuentas[totalCuentas].pin);
-
+    LeerPIN(cuentas[totalCuentas].pin);
+    
+    cout << endl; 
     cout << "Saldo inicial: $";
     cin >> cuentas[totalCuentas].saldo;
 
@@ -201,7 +203,7 @@ void IniciarSesion(){
     getline(cin, cedula);
 
     cout << "PIN: ";
-    getline(cin, pin);
+    LeerPIN(pin);
     bool encontrado = false;
 
     for(int i = 0; i < totalCuentas; i++)
@@ -256,7 +258,7 @@ void IniciarSesion(){
     }
 }
 
-//Menú usuario al ingresar con su cedula y contraseña
+//Menu usuario al ingresar con su cedula y contraseña
 void MenuUsuario(int indiceUsuario){
 	
 	int opcionUsuario; 
@@ -334,7 +336,7 @@ void MenuUsuario(int indiceUsuario){
 	} while(opcionUsuario !=7); 
 }
 
-//Función depositar (caso 2)
+//Funcion depositar (caso 2)
 void Depositar(int indiceUsuario){
     double monto;
 
@@ -367,7 +369,7 @@ void Depositar(int indiceUsuario){
     getch();
 }
 
-//Función retirar (caso 3)
+//Funcion retirar (caso 3)
 void Retirar(int indiceUsuario){
     double monto;
 
@@ -458,7 +460,7 @@ void GuardarCambios(){
     archivo.close();
 }
 
-// Función Transferir (caso 4)
+// Funcion Transferir (caso 4)
 void Transferir(int indiceUsuario)
 {
     string cedulaDestino;
@@ -609,7 +611,7 @@ void VerHistorial(int indiceUsuario){
     getch();
 }
 
-//Función para cambiar el PIN del cliente
+//Funcion para cambiar el PIN del cliente
 void CambiarPIN(int indiceUsuario)
 {
     string pinActual;
@@ -632,7 +634,7 @@ void CambiarPIN(int indiceUsuario)
     }
 
     cout << "\nIngrese el nuevo PIN (4 digitos): ";
-    cin >> nuevoPIN;
+    LeerPIN(nuevoPIN);
 
     cout << "Confirme el nuevo PIN: ";
     cin >> confirmarPIN;
@@ -643,14 +645,6 @@ void CambiarPIN(int indiceUsuario)
         getch();
         return;
     }
-
-    if(nuevoPIN.length() != 4)
-    {
-        cout << "\nEl PIN debe tener 4 digitos." << endl;
-        getch();
-        return;
-    }
-
     bool soloNumeros = true;
 
     for(int i = 0; i < nuevoPIN.length(); i++)
@@ -678,6 +672,20 @@ void CambiarPIN(int indiceUsuario)
     getch();
 }
 
+//
+void LeerPIN(string &pin){
+    pin = "";
+    char digito;
+
+    while(pin.length() < 4){
+        digito = getch();
+
+        if(isdigit(digito)){
+            pin += digito;
+            cout << "*";
+        }
+    }
+}
 
 void CuentaRegresiva(int segundos)
 {
